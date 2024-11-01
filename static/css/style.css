@@ -1,0 +1,276 @@
+body {
+    background: linear-gradient(to right, #FAF0E6, #B9B4C7);
+    /* background-color: rgb(99, 250, 127); */
+  }
+
+.container{
+  background: linear-gradient(to right,#CDC1FF, #FAF0E6, #CDC1FF);}
+
+
+.bg-admin {
+    background-color: #EDDFE0;
+  }
+  
+  .bg-sp {
+    background-color: #FCDE70;
+  }
+  
+  .bg-customer {
+    background-color: #F78CA2;
+  }
+  .modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-weight: bold; /* Ensures bold text */
+    font-size: 1.5rem; /* Increases text size, adjust as needed */
+    background-color: #FFE1FF; /* Existing background color */
+    color: #5D4037; /* Dark brown color */
+}
+
+  .modal-footer {
+    display: flex;
+    justify-content: center;
+    background-color: #eccd5e;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E4B1F0;
+    color: #5D4037;
+  }
+
+  .my-requests-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin: 20px auto;
+  }
+  
+  .table {
+    margin: 20px auto;  /* Adds space around the table */
+    max-width: 100%;    /* Ensures responsiveness */
+    border-collapse: collapse;  /* Removes gaps between table borders */
+    width: 90%;  /* Optional: Adjust table width */
+}
+  
+  .table-hover tbody tr:hover {
+    background-color: #1c69b5;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Custom styles for status badges */
+  .badge {
+    padding: 0.5em 0.75em;
+    font-size: 0.85em;
+    border-radius: 0.25rem;
+  }
+  
+  .badge-requested {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  
+  .badge-accepted {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .badge-closed {
+    background-color: #dc3545;
+    color: #161853;
+  }
+  .all-requests {
+    margin: 20px;
+  }
+  
+  .table {
+    margin: 20px auto;  /* Adds space around the table */
+    max-width: 100%;    /* Ensures responsiveness */
+    border-collapse: collapse;  /* Removes gaps between table borders */
+    width: 90%;  /* Optional: Adjust table width */
+}
+  
+  .table th,
+  .table td,
+  .tbody {
+    padding: 8px 12px;/* Adds padding to make the content breathable */
+    text-align: left;/* Align text in the cells */
+    background-color: #FFC6C6;
+    border-bottom: 3px solid #0f75da;
+    border: 3px solid #3912d6;  /* Border around cells */
+  }
+  
+  .table th {
+    background-color: #FFEB55;
+    
+    color: #333;                /* Darker text for header */
+    font-weight: bold;          /* Bold header */
+  }
+  .my-requests-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin: 20px auto;
+  }
+  
+  .table {
+    margin: 0 auto;
+    max-width: 100%;
+    border-bottom: 1px solid #0f75da;
+    border: 3px solid #0f75da;  /* Border around cells */
+  }
+  
+  
+  .table-hover tbody tr:hover {
+    background-color: #e9ecef;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Custom styles for status badges */
+  .badge {
+    padding: 0.5em 0.75em;
+    font-size: 0.85em;
+    border-radius: 0.25rem;
+  }
+  
+  .badge-requested {
+    background-color: #ffc107;
+    color: #0f0e0d;
+  }
+  
+  .badge-accepted {
+    background-color: #28a745;
+    color: #e80d0d;
+  }
+  
+  .badge-closed {
+    background-color: #dc3545;
+    color: #6110cb;
+  }
+  
+
+  .service-container {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .card-header {
+    background-color: #54473F;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .service-title {
+    font-size: 1.8rem;
+    color: white;
+  }
+  
+  .service-info p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 1.1rem;
+  }
+  
+  .date-created, .price {
+    font-weight: bold;
+  }
+  
+  .price {
+    color: #28a745;
+  }
+  
+  .text-warning {
+    color: #ffc107;
+  }
+  
+  .text-muted {
+    color: #02111f;
+  }
+  
+  .fw-semibold {
+    font-weight: 600;
+  }
+  
+  .shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(168, 84, 84, 0.075);
+  }
+  .status-accepted {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .status-rejected {
+    color: red;
+    font-weight: bold;
+  }
+  /*Review Form*/
+  .review-form {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  
+  
+  .rating {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .rating i {
+    cursor: pointer;
+    color: #ffb400;
+  }
+  
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+
