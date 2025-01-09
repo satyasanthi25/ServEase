@@ -78,9 +78,9 @@ export default {
 
                 if (response.ok) {
                     // Registration successful
-                    localStorage.setItem('auth-token', data.token);
-                    localStorage.setItem('role', data.role);
-                    this.$router.push({ path: '/user-login' });
+                    //localStorage.setItem('auth-token', data.token);
+                    //localStorage.setItem('role', data.role);
+                    this.$router.push({ path: '/pending-approval' });
                 } else {
                     // Display the error message returned from the server
                     this.error = data.message || 'Registration failed.';
@@ -124,13 +124,21 @@ export default {
                     <label class="form-label" style="font-weight: bold;">Service Name</label>
                     <select v-model="user.service_name" class="form-control">
                         <option value="">Select available services</option>
-                        <option value="plumbing">Plumbing</option>
-                        <option value="electrical">Electrical</option>
-                        <option value="carpentry">Carpentry</option>
-                        <option value="cleaning">Cleaning</option>
-                        <option value="salon">Salon Service</option>
-                        <option value="health">Health</option>
-                        <option value="others">Others</option>
+                        <option value="Plumbing Services">Plumbing Services</option>
+                        <option value="Electrical Services">Electrical Services</option>
+                        <option value="Carpentry Services">Carpentry Services</option>
+                        <option value="House Cleaning Services">House Cleaning Services</option>
+                        <option value="Salon Services">Salon Services</option>
+                        <option value="Appliance Repair Services">Appliance Repair Services</option>
+                        <option value="Home Tutoring Services">Home Tutoring Services</option>
+                        <option value="Laundry and Dry Cleaning Services">Laundry and Dry Cleaning Services</option>
+                        <option value="Gardening">Gardening</option>
+                        <option value="Pet Care Services">Pet Care Services</option>
+                        <option value="Home Health Care Services">Home Health Care Services</option>
+                        <option value="Gardening and Landscaping Services">Gardening and Landscaping Services</option>
+                        <option value="Pest Control Services">Pest Control Services</option>
+                        <option value="Home Painting Services">Home Painting Services</option>
+                        <option value="others">others</option>
                     </select>
                 </div>
                 <div class="form-group mb-3">

@@ -42,7 +42,7 @@ export default {
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>Service ID</th>
+            <th>Service Name</th>
             <th>Customer Name</th>
             <th>Contact No</th>
             <th>Customer Address</th>
@@ -53,6 +53,7 @@ export default {
         </thead>
         <tbody>
           <tr v-for="request in closedServices" :key="request.id">
+          <td>{{ request.service_name }}</td>
           <td>{{ request.customer_name || 'N/A' }}</td>
           <td>{{ request.customer_contact_no || 'N/A' }}</td>
           <td>{{ request.customer_address || 'N/A' }}</td>

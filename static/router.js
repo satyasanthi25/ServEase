@@ -2,7 +2,6 @@ import Home from './components/Home.js';
 import Login from "./components/Login.js";
 import CustomerRegister from './components/CustomerRegister.js';
 import ProfessionalRegister from './components/ProfessionalRegister.js';
-//import AllServicePackages from './components/AllServicePackages.js'
 import AllServices from './components/AllServices.js';
 import EditService from './components/EditService.js';
 import MyRequests from './components/MyRequests.js';
@@ -12,16 +11,14 @@ import Professionals from './components/Professionals.js';
 import Users from './components/Users.js';
 import ServiceRequestForm from './components/ServiceRequestForm.js';
 import AllRequests from './components/AllRequests.js';
-import ServiceHistory from './components/ServiceHistory.js';
-import TodayServices from './components/TodayServices.js';
 import ClosedServices from './components/ClosedServices.js';
-import SearchBar from './components/SearchBar.js';
 import SearchResult from './components/SearchResult.js';
 import AdminStats from './components/AdminStats.js';
 import MyServices from './components/MyServices.js';
 import EditRequest from './components/EditRequest.js';
-import ReviewForm from './components/ReviewForm.js';
-import About from './components/About.js';
+import ViewCustomerRequests from './components/ViewCustomerRequests.js';
+import SimilarLocation from './components/SimilarLocation.js';
+import AvailableServices from './components/AvailableServices.js';
 
 
 
@@ -31,7 +28,6 @@ const routes = [
     {path: "/user-login", component: Login, name: "Login"},
     {path: "/customer-register",component:CustomerRegister, name: "CustomerRegister"},
     {path: "/sp-register",component: ProfessionalRegister, name: "ProfessionalRegister"},
-    //{path: "/packages", component: AllServicePackages, name: "AllServicePackages"},
     {path: "/services", component: AllServices, name: "AllServices"},
     {path: "/edit-service/:id", component: EditService, name: "EditService"},
     {path: "/my-requests", component: MyRequests, name: "MyRequests"},
@@ -41,25 +37,18 @@ const routes = [
     {path: "/service-requests", component: ServiceRequestForm, name: "ServiceRequestForm"},
     {path: "/users", component: Users, name: "Users"},
     {path: "/admin/all-requests", component: AllRequests, name: "AllRequests"},
-    {path: "/service-hist", component: ServiceHistory, name: "ServiceHistory"},
-    {path: "/today-services", component: TodayServices, name: "TodayServices"}, 
-    {path: "/closed-services", component: ClosedServices, name: "ClosedServices"},
-    // Adding routes for SearchBar component
-    { path: "/search/customer", component: SearchBar, name: "SearchCustomer", props: { role: 'customer' } },
-    { path: "/search/professional", component: SearchBar, name: "SearchProfessional", props: { role: 'sp' } },
-    { path: "/search/admin", component: SearchBar, name: "SearchAdmin", props: { role: 'admin' } },
-    { path: '/search-result',component: SearchResult,name: 'SearchResult',props: route => ({results: route.params.results || [],
-          role: route.params.role || ''
-        })
-      },
+    {path: "/cust-services",component: AvailableServices,name:"AvailableServices"},
+    { path: "/prof/all-requests", component: ViewCustomerRequests, name: "ViewCustomerRequests"},
+    { path: "/closed-services", component: ClosedServices, name: "ClosedServices"},  
     { path: '/admin-stats', component: AdminStats, name: 'AdminStats' },
     { path: '/my-services', component: MyServices, name: 'MyServices' },
     { path: '/service-requests/:id',name: 'EditRequest',component: EditRequest },
-    { path: '/review-form/:id',name: 'ReviewForm', component: ReviewForm },
-    { path: '/about', component: About, name: 'About' },
-  
+    { path: '/professionals/similar_location',name : 'SimilarLocation',component: SimilarLocation},
+    { path:'/search-result', component: SearchResult, name: 'SearchResult'},
+    
       
     
+     
 ];
 
 const router = new VueRouter({

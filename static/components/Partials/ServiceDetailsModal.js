@@ -19,22 +19,6 @@ export default ({
             }
         },
         
-        markAsFavorite(service_id) {
-            fetch(`/api/service/mark_as_fav/${service_id}`, {
-                headers: {
-                    'Authentication-Token': localStorage.getItem('auth-token')
-                },
-                method: 'GET',
-            }).then(async (res) => {
-                if (res.ok) {
-                    this.getServiceDetails(service_id);
-                } else {
-                    console.error("Error marking service as favorite");
-                }
-            }).catch(err => {
-                console.error("Network error", err);
-            });
-        },
         
         viewModal(service) {
             this.serviceInfo = service;
@@ -54,21 +38,6 @@ export default ({
             }
         },
         
-        acceptService(request_id) {
-            this.fetchAndUpdate(`/api/accept-request/${request_id}`, this.serviceInfo.service_id);
-        },
-        
-        requestServiceForBooking(service_id) {
-            this.fetchAndUpdate(`/api/request-service/${service_id}`, service_id);
-        },
-        
-        closeService(request_id) {
-            this.fetchAndUpdate(`/api/close-request/${request_id}`, this.serviceInfo.service_id);
-        },
-        
-        requestService(request_id) {
-            this.fetchAndUpdate(`/api/request-request/${request_id}`, request_id);
-        }
     },
     
     mounted() {
@@ -82,9 +51,7 @@ export default ({
     },
     
     template: `
-        <!-- Modal -->
-<!-- Modal -->
-<!-- Modal -->
+  
 <div>
     <div class="modal fade" id="viewServiceDetailsModal" tabindex="-1" aria-labelledby="viewServiceDetailsModalLabel"
          aria-hidden="true">
@@ -113,14 +80,14 @@ export default ({
                                 <div class="float-end" v-if="role === 'admin'">
                                     <router-link class="text-white" :to="'/edit-service/'+serviceInfo.service_id">
                                         <button class="btn btn-primary" data-bs-dismiss="modal">
-                                            Edit
+                                            Edit/Manage Service
                                         </button>
                                     </router-link>
                                 </div>
                                 <div class="float-end" v-if="role === 'customer'">
                                     <router-link class="text-white" :to="'/book/'+serviceInfo.service_id">
                                         <button class="btn btn-warning" data-bs-dismiss="modal">
-                                            View/Manage Service
+                                            View
                                         </button>
                                     </router-link>
                                 </div>
@@ -160,54 +127,19 @@ export default ({
                                             You can only request a maximum of 1 service at a time. Please wait until the current request is accepted or completed.
                                         </div>
 
-                                        <button v-else type="button" class="btn btn-primary"
-                                                :disabled="serviceInfo.num_of_service_pending_for_me > 3"
-                                                @click="requestServiceForBooking(serviceInfo.service_id)">
-                                            Request This Service
-                                        </button>
+                                        
                                     </template>
                                 </div>
 
-                                <!-- Admin only view in tab -->
-                                <div class="tab-pane fade" v-if="role === 'admin'" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>Customer Name</th>
-                                            <th>Booked By</th>
-                                            <th>Status</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-for="request, i in serviceInfo.requests" :key="i" v-if="!request.is_accepted && !request.is_closed">
-                                            <td>{{ request.user.fullname }}</td>
-                                            <td>Pending</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-success" @click="acceptService(request.id)">Accept</button>
-                                                <button class="btn btn-sm btn-danger" @click="requestService(request.id)">Request</button>
-                                            </td>
-                                        </tr>
-
-                                        <tr v-for="request, i in serviceInfo.requests" :key="i" v-if="request.is_accepted && !request.is_closed">
-                                            <td>{{ request.user.fullname }}</td>
-                                            <td>{{ request.date_of_request }}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-success" @click="closeService(request.id)">Close Service</button>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                               
+                                
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <!-- Mark as favorite button only for customers -->
-                    <button v-if="role === 'customer'" type="button" @click="markAsFavorite(serviceInfo.service_id)">
-                        Mark this Service as Favorite
-                    </button>
+                    
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

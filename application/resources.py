@@ -14,7 +14,19 @@ from sqlalchemy import text,or_
 from werkzeug.utils import secure_filename
 from .models import *
 from flask import current_app
-from application.models import Service, db, User, ServiceRequest, Review
+from application.models import Service, db, User, ServiceRequest,DailyVisit
+
+
+
+
+def log_user_visits():
+    if current_user is not None and any(role in current_user.roles for role in ["customer", "sp"]):
+        visited = DailyVisit.query.filter_by(user_id=current_user.id,
+                                             date=datetime.today().strftime('%Y-%m-%d')).count()
+        if visited == 0:
+            vs = DailyVisit(user_id=current_user.id, date=datetime.today())
+            db.session.add(vs)
+            db.session.commit()
 
 
 api = Api(prefix='/api')
@@ -26,24 +38,14 @@ user_fields = {
     'fullname': fields.String,
     'address': fields.String,
     'pin_code': fields.String,
-    'contact_no': fields.String,  # Add contact number
-    'service_name': fields.String,  # For Service Professional
-    'experience_years': fields.Integer,  # For Service Professional
+    'contact_no': fields.String,  
+    'service_name': fields.String,  
+    'experience_years': fields.Integer,  
     'is_professional': fields.Boolean, 
-    'is_approved': fields.Boolean,  # Admin approval status for service professional
-    'is_blocked': fields.Boolean, # Admin approval status for service professional
+    'is_approved': fields.Boolean,  
+    'is_blocked': fields.Boolean, 
 }
 
-review_fields = {
-    'id': fields.Integer,
-    'user_id': fields.Integer,
-    'service_request_id': fields.Integer,  
-    'rating': fields.Integer,
-    'comments': fields.String, 
-    'date_posted': fields.DateTime(dt_format='iso8601'),
-    'service_id': fields.Integer,
-    'user': fields.Nested(user_fields),
-}
 service_request_fields = {
     'id': fields.Integer,
     'customer_id': fields.Integer,
@@ -97,6 +99,7 @@ service_fields = {
 # API Resource for a single service---id
 class ServiceResource(Resource):
     @auth_required("token")
+    #@cache.cached(timeout=5)
     # GET /service/<int:service_id>
     def get(self, service_id):
         service = Service.query.get_or_404(service_id)
@@ -106,6 +109,7 @@ class ServiceResource(Resource):
     # PUT /service/<int:service_id> (Admin only)
     @auth_required("token")
     @roles_required("admin")
+    #@cache.cached(timeout=5)
     def put(self, service_id):
         try:
             parser = reqparse.RequestParser()
@@ -149,7 +153,7 @@ class ServiceResource(Resource):
                 service.service_date_created = datetime.strptime(date_created_str, '%Y-%m-%d')
             except ValueError:
                 return {"message": f"Invalid date format for 'service_date_created': {date_created_str}. Use YYYY-MM-DD."}, 400
-
+            
         except Exception as e:
             db.session.rollback()
             return {'message': f"Error in updating service: {str(e)}"}, 500
@@ -175,15 +179,16 @@ class ServiceResource(Resource):
 #------------------GET/POST-----------------------------------------------------
 # API Resource for service collection
 class ServiceListResource(Resource):
-    #@cache.cached(timeout=50)
-    # GET /service
+       
     @auth_required("token")
     def get(self):
+        log_user_visits() 
         services = Service.query.all()
         return marshal(services,service_fields)
 
     # POST /service (Admin only)
     @auth_required("token")
+    #@cache.cached(timeout=5)
     def post(self):
         # Set up the request parser
         parser = reqparse.RequestParser()
@@ -242,114 +247,10 @@ class ServiceListResource(Resource):
         db.session.commit()
 
         return {"message": "Service created successfully"}, 201
-#_____________________________________________________________________-______________________
-class ProfessionalList(Resource):
-    # @cache.cached(timeout=50)
-    @auth_required("token")
-    def get(self):
-        if not current_user.has_role('admin'):
-            return {"message": "Admin access required"}, 403
-
-        try:
-            professionals = User.query.filter_by(is_professional=True).all()
-            if not professionals:
-                return {"message": "No professionals found"}, 404
-            return {"professionals": marshal(professionals, user_fields)}, 200
-        except Exception as e:
-            return {"message": str(e)}, 500
 #__________________________________________________________________
-class ApproveProfessionals(Resource):
-    @auth_required("token")
-    def get(self, user_id):
-        # Fetch the service professional user by user_id
-        user = User.query.get(user_id)
-
-        if not user:
-            return {"message": "User not found"}, 404  # Handle if the user doesn't exist
-
-        if not user.is_service_professional:
-            return {"message": "User is not a service professional"}, 400  # Handle if the user is not a professional
-
-        if user.is_approved:
-            return {"message": "User is already approved"}, 400  # Handle already approved case
-
-        # Approve the service professional
-        user.is_approved = True
-        user.date_of_request = datetime.today()  # Assuming this tracks the approval date
-
-        db.session.add(user)
-        db.session.commit()
-
-        return {"message": "Professional approved successfully"}, 201
-#___________________________________________________________________________________
-class BlockProfessionals(Resource):
-    @auth_required("token")
-    def get(self, user_id):
-        # Fetch the service professional user by user_id
-        user = User.query.get(user_id)
-
-        if not user:
-            return {"message": "User not found"}, 404  # Handle if the user doesn't exist
-
-        if not user.is_service_professional:
-            return {"message": "User is not a service professional"}, 400  # Handle if the user is not a professional
-
-        if not user.is_approved and user.is_blocked:
-            return {"message": "User is already rejected"}, 400  # Handle already rejected case
-
-        # Reject the service professional
-        user.is_approved = False
-        user.is_blocked = True  # Mark as blocked or rejected (you can adjust this based on your logic)
-
-        db.session.add(user)
-        db.session.commit()
-
-        return {"message": "Professional rejected successfully"}, 201
-#________________________________________________________________
-class DeleteProfessionals(Resource):
-    @auth_required("token")
-    def delete(self, user_id):
-        # Fetch the service professional user by user_id
-        user = User.query.get(user_id)
-
-        if not user:
-            return {"message": "User not found"}, 404  # Handle if the user doesn't exist
-
-        if not user.is_service_professional:
-            return {"message": "User is not a service professional"}, 400  # Handle if the user is not a professional
-
-        # Delete the service professional
-        db.session.delete(user)
-        db.session.commit()
-
-        return {"message": "Professional deleted successfully"}, 200
-#___________________________________________________________
-# Service Request Handling Resources
-# POST /service-requests: Create a new service request (Customer only).
-# GET /service-requests: List all service requests for the logged-in user (Customer/Professional).
-# GET /service-requests/<int:request_id>: Get details of a specific service request.
-# PUT /service-requests/<int:request_id>: Update a service request (Customer/Professional - status updates).
-# DELETE /service-requests/<int:request_id>: Delete a service request (Customer/Admin).            
-#______________________________________________________________________________ 
-
-class MarkFavService(Resource):
-    @auth_required("token")
-    # @cache.cached(timeout=50)
-    def get(self,service_id):
-        user = User.query.get(current_user.id)
-        user.fav_service = service_id;
-        db.session.commit()
-        return {"message":"updated successfully"},200   
-# #__________________________________________________________________
 api.add_resource(ServiceListResource, '/service')
 api.add_resource(ServiceResource, '/service/<int:service_id>')
-api.add_resource(ProfessionalList, '/professionals') # Plural
-api.add_resource(ApproveProfessionals, '/admin/approve/<int:user_id>')
-api.add_resource(BlockProfessionals, '/admin/reject/<int:user_id>')
-api.add_resource(DeleteProfessionals, '/admin/delete/<int:user_id>')
-#api.add_resource(AcceptService, '/admin/accept/<int:id>')
 
-api.add_resource(MarkFavService, '/service/mark_as_fav/<int:service_id>')
 
 
 

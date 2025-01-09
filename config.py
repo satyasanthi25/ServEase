@@ -2,7 +2,7 @@ from datetime import timedelta
 class Config(object):
     DEBUG = False
     TESTING = False
-    CACHE_DEFAULT_TIMEOUT = 30
+    
 
 
 class DevelopmentConfig(Config):
@@ -20,3 +20,7 @@ class DevelopmentConfig(Config):
     CACHE_REDIS_HOST = "localhost"
     CACHE_REDIS_PORT = 6379
     CACHE_REDIS_DB = 3
+    
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Update with your broker URL
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Use Redis as the result backend
+    

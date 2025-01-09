@@ -2,7 +2,7 @@ export default ({
     data: () => ({
         loading: false,
         new_service: {
-            service_id:'',
+            //service_id:'',
             service_name: '',
             base_price: '',
             description: '',
@@ -12,7 +12,8 @@ export default ({
         services: [],
         bootstrap_modal: {},
         edit_bootstrap_modal: {},
-        edit_service: {}
+        edit_service: {},
+        validation_errors: {}
     }),
     computed: {
         role() {
@@ -68,16 +69,13 @@ export default ({
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Service Id</label>
-                                <input type="number" v-model="new_service.service_id" class="form-control">
-                            </div>
-                        </div>
+                        
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">Service Name</label>
                                 <input type="text" v-model="new_service.service_name" class="form-control">
+                                <small v-if="validation_errors.service_name" class="text-danger">{{ validation_errors.service_name }}</small>
+
                             </div>
                         </div>
                         <!-- Updated inputs for date, price, rating -->
@@ -85,24 +83,32 @@ export default ({
                             <div class="form-group">
                                 <label class="form-label">Service Price</label>
                                 <input type="number" v-model="new_service.base_price" class="form-control">
+                                <small v-if="validation_errors.base_price" class="text-danger">{{ validation_errors.base_price }}</small>
+
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">Service Created Date</label>
                                 <input type="date" v-model="new_service.service_date_created" class="form-control">
+                                <small v-if="validation_errors.service_date_created" class="text-danger">{{ validation_errors.service_date_created }}</small>
+
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">Service Rating</label>
                                 <input type="number" v-model="new_service.service_rating" class="form-control" min="1" max="5">
+                                <small v-if="validation_errors.service_rating" class="text-danger">{{ validation_errors.service_rating }}</small>
+
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label">Service Description</label>
                                 <textarea class="form-control" rows="5" v-model="new_service.description"></textarea>
+                                <small v-if="validation_errors.description" class="text-danger">{{ validation_errors.description }}</small>
+
                             </div>
                         </div>
                     
@@ -129,6 +135,7 @@ export default ({
                         </div>
                         <div class="modal-body">
                             <div class="row">
+                                
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="form-label">Service Name</label>
@@ -174,6 +181,58 @@ export default ({
         </div>
     `,
     methods: {
+        validateAndAddService() {
+            this.validation_errors = this.validateService(this.new_service);
+            if (Object.keys(this.validation_errors).length === 0) {
+                this.addService();
+            }
+        },
+        validateAndSaveService() {
+            this.validation_errors = this.validateService(this.edit_service);
+            if (Object.keys(this.validation_errors).length === 0) {
+                this.saveService();
+            }
+        },
+        validateService(service) {
+            const errors = {};
+            const today = new Date();
+            // today.setHours(0, 0, 0, 0); // Set time to midnight to only compare dates
+        
+            // Validate service_name
+            if (!service.service_name) {
+                errors.service_name = "Service name is required.";
+            }
+        
+            // Validate base_price
+            if (!service.base_price || isNaN(service.base_price) || service.base_price <= 0) {
+                errors.base_price = "Please enter a valid price.";
+            }
+        
+            // Validate description
+            if (!service.description) {
+                errors.description = "Description is required.";
+            }
+        
+            // Validate service_date_created
+            if (!service.service_date_created) {
+                errors.service_date_created = "Service date is required.";
+            } else {
+                const serviceDate = new Date(service.service_date_created);
+                if (isNaN(serviceDate)) {
+                    errors.service_date_created = "Invalid date format. Please provide a valid date.";
+                } else if (serviceDate < today) {
+                    errors.service_date_created = "Service date cannot be in the past.";
+                }
+            }
+        
+            // Validate service_rating
+            if (!service.service_rating || service.service_rating < 1 || service.service_rating > 5) {
+                errors.service_rating = "Rating must be between 1 and 5.";
+            }
+        
+            return errors;
+        },
+        
         editService(service_id) {
             this.edit_bootstrap_modal.show();
             fetch('/api/service/' + service_id, {

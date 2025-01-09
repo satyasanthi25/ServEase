@@ -1,4 +1,4 @@
-Household Services Application (V2) sounds well-structured with a clear set of roles and functionalities. Here's a quick summary:
+Household Services Application V2 
 
 Core Features:
 User Authentication:
@@ -43,4 +43,4 @@ Integrate Redis and Celery:
 Implement caching, reminders, and reports using Redis and Celery.
 Design Frontend using Vue.js and Bootstrap:
 
-Build responsive, user-friendly interfaces for all roles.
+Build responsive, user-friendly interfaces for all roles
